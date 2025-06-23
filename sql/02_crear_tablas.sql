@@ -156,7 +156,7 @@ CREATE TABLE detalles_pedido (
     fecha_pedido_fk     DATE NOT NULL,
     producto_id         NUMBER NOT NULL,
     cantidad            NUMBER(5) NOT NULL,
-    precio_unitario     NUMBER(10, 2) NOT NULL, -- Guardamos el precio del momento de la compra. ¡No hay estafas aquí!
+    precio_unitario     NUMBER(10, 2) NOT NULL, -- Guardamos el precio del momento de la compra. ¡No hay estafas aquí! 😈
     CONSTRAINT pk_detalles_pedido PRIMARY KEY (detalle_id),
     CONSTRAINT fk_detalles_pedido_pedido FOREIGN KEY (pedido_id, fecha_pedido_fk) REFERENCES pedidos(pedido_id, fecha_pedido) ON DELETE CASCADE,
     CONSTRAINT fk_detalles_pedido_producto FOREIGN KEY (producto_id) REFERENCES productos(producto_id)
