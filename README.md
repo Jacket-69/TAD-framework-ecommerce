@@ -53,7 +53,7 @@ docker-compose exec oracle-db bash
 sqlplus sys/TAD-framework-2025@//localhost:1521/XEPDB1 as sysdba
 
 # Dentro de SQL*Plus, ejecutar el script de creación del esquema
-@/app/sql/01_create_schema.sql
+@/app/sql/01_crear_schema.sql
 
 # Salir de SQL*Plus
 exit;
@@ -67,7 +67,7 @@ Con el usuario ya creado, podemos conectarnos como ECOMMERCE_FRAMEWORK para ejec
 sqlplus ECOMMERCE_FRAMEWORK/framework123@//localhost:1521/XEPDB1
 
 # Ejecutar el script para crear las tablas
-@/app/sql/02_create_tables.sql
+@/app/sql/02_crear_tablas.sql
 
 # (Aquí se ejecutarían los demás scripts en orden)
 # @/app/sql/03_... .sql

@@ -1,4 +1,3 @@
--- sql/01_create_schema.sql
 -- --------------------------------------------------------------------------
 -- Este script crea el usuario (esquema) principal para la aplicación
 -- del framework de e-commerce. Debe ser ejecutado por un usuario con
