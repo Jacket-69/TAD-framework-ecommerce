@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  oracle-db:
+    image: jacket69/tad-framework-ecommerce:latest
+    container_name: tad_oracle_db
+    ports:
+      - "1521:1521"
+    environment:
+      # Definimos una contraseña específica y segura para este proyecto.
+      - ORACLE_PWD=TAD-framework-2025
+    volumes:
+      # Este volumen asegura que los datos de la BD no se borren si el contenedor se elimina.
+      - oracle-data:/opt/oracle/oradata
+      # Monta la carpeta ./sql de tu PC en la carpeta /app/sql dentro del contenedor.
+      - ./sql:/app/sql
+    healthcheck:
+      # Esta prueba verifica que la base de datos (PDB) esté lista para aceptar conexiones.
+      test: ["CMD", "sh", "-c", "echo 'SELECT 1 FROM DUAL;' | sqlplus -s sys/TAD-framework-2025@//localhost:1521/XEPDB1 as sysdba"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+volumes:
+  oracle-data:
+    name: tad_oracle_data

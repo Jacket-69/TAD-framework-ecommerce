@@ -1,0 +1,20 @@
+# Archivos de configuración local
+/db_config.conf
+/credentials.json
+*.env
+
+# Archivos de logs y dumps
+*.log
+*.sql.gz
+*.dmp
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de IDEs
+.idea/
+.vscode/
+
+# Archivos de Docker
+docker-compose.override.yml
