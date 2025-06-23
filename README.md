@@ -2,7 +2,8 @@
 
 ## Descripción del Sistema
 
-Este proyecto es una Prueba de Concepto (POC) para un framework de base de datos diseñado para soportar la creación de múltiples sistemas de comercio electrónico, similar a plataformas como Shopify o Jumpseller. La base de datos está diseñada para ser multi-tenant (soportar varias tiendas) y manejar los flujos esenciales de un e-commerce: gestión de productos, inventario, clientes, pedidos y ventas.
+Este proyecto es una Prueba de Concepto (POC) para un framework de base de datos diseñado para soportar la creación de múltiples sistemas de comercio electrónico, similar a plataformas como Shopify o Jumpseller.
+La base de datos está diseñada para ser multi-tenant (soportar varias tiendas) y manejar los flujos esenciales de un e-commerce: gestión de productos, inventario, clientes, pedidos y ventas.
 
 La gerencia no tiene claro cuales son los principales flujos que deberían ser soportados por la base de datos, por lo que la propuesta de flujo debe venir desde el equipo de desarrollo.
 
@@ -22,13 +23,21 @@ La gerencia no tiene claro cuales son los principales flujos que deberían ser s
 * **Entorno de Ejecución:** Docker y Docker Compose.
 * **Herramientas:** SQL*Plus (vía terminal).
 
+## Diagramas de la BD
+### dbdiagram:
+![dbdiagram-framework-ecommerce](https://github.com/user-attachments/assets/51a7d19c-6467-4498-8b7c-9a987d36bd3a)
+
+### Lucidchart:
+![MER-framework-ecommerce](https://github.com/user-attachments/assets/52ee832d-17d5-48f5-9120-66c9a5cf02ac)
+
 ## Instrucciones de Instalación y Uso
 
 El entorno de desarrollo está completamente dockerizado. Sigue estos pasos para levantarlo y configurarlo.
 
 ### 1. Levantar la Base de Datos con Docker
 
-Asegúrate de tener Docker corriendo en tu máquina. Luego, clona el repositorio y ejecuta el siguiente comando desde la raíz del proyecto. La primera vez, Docker descargará la imagen, lo cual puede tardar.
+Asegúrate de tener Docker corriendo en tu máquina. Luego, clona el repositorio y ejecuta el siguiente comando desde la raíz del proyecto.
+La primera vez, Docker descargará la imagen, lo cual puede tardar.
 
 ```bash
 # Clona el repositorio (si aún no lo has hecho)
@@ -43,7 +52,8 @@ docker-compose logs -f oracle-db
 Espera hasta que veas un mensaje que diga DATABASE IS READY TO USE!. Puedes salir de los logs con Ctrl+C.
 
 2. Crear el Esquema de la Aplicación
-Ahora, vamos a conectarnos como SYSTEM para crear el usuario ECOMMERCE_FRAMEWORK, que será el dueño de todos los objetos de nuestra base de datos.
+Ahora, vamos a conectarnos como SYSTEM para crear el usuario ECOMMERCE_FRAMEWORK,
+que será el dueño de todos los objetos de nuestra base de datos.
 
 # Entrar al contenedor de la base de datos
 docker-compose exec oracle-db bash
@@ -59,7 +69,8 @@ sqlplus sys/TAD-framework-2025@//localhost:1521/XEPDB1 as sysdba
 exit;
 
 3. Ejecutar Scripts de Creación de Tablas
-Con el usuario ya creado, podemos conectarnos como ECOMMERCE_FRAMEWORK para ejecutar el resto de los scripts (crear tablas, procedimientos, etc.).
+Con el usuario ya creado, podemos conectarnos como ECOMMERCE_FRAMEWORK
+para ejecutar el resto de los scripts (crear tablas, procedimientos, etc.).
 
 # Si saliste del contenedor, vuelve a entrar: docker-compose exec oracle-db bash
 
@@ -78,3 +89,9 @@ exit;
 
 # Salir del contenedor
 exit;
+```
+
+
+
+
+
