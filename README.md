@@ -32,64 +32,51 @@ La gerencia no tiene claro cuales son los principales flujos que deberían ser s
 
 ## Instrucciones de Instalación y Uso
 
-El entorno de desarrollo está completamente dockerizado. Sigue estos pasos para levantarlo y configurarlo.
+El entorno de desarrollo está completamente dockerizado. 
+Hemos destilado minuciosamente la esencia de la programación en un solo comando que lo hace todo.
+Sigue estos sencillos pasos para levantarlo y configurarlo.
 
-### 1. Levantar la Base de Datos con Docker
+### Paso 0: Limpieza Opcional
 
-Asegúrate de tener Docker corriendo en tu máquina. Luego, clona el repositorio y ejecuta el siguiente comando desde la raíz del proyecto.
+Si ya intentaste levantar esto antes y algo salió mal, ejecuta este comando para borrar todo y empezar de cero.
+```bash
+docker-compose down -v
+```
+### Paso 1: Levantar la Base de Datos con Docker
+
+Asegúrate de tener Docker corriendo en tu máquina. 
+
+Luego, clona el repositorio y ejecuta el siguiente comando desde la raíz del proyecto.
+
 La primera vez, Docker descargará la imagen, lo cual puede tardar.
 
 ```bash
 # Clona el repositorio (si aún no lo has hecho)
 git clone https://github.com/Jacket-69/TAD-framework-ecommerce.git
+
 cd TAD-framework-ecommerce
-
-# Levanta el contenedor de la base de datos en segundo plano
-docker-compose up -d
-
-Para verificar que la base de datos se está iniciando, puedes ver los logs:
-docker-compose logs -f oracle-db
-Espera hasta que veas un mensaje que diga DATABASE IS READY TO USE!. Puedes salir de los logs con Ctrl+C.
-
-2. Crear el Esquema de la Aplicación
-Ahora, vamos a conectarnos como SYSTEM para crear el usuario ECOMMERCE_FRAMEWORK,
-que será el dueño de todos los objetos de nuestra base de datos.
-
-# Entrar al contenedor de la base de datos
-docker-compose exec oracle-db bash
-
-# Una vez dentro, conectarse a la base de datos como SYSTEM
-# La contraseña es la que definimos en docker-compose.yml
-sqlplus sys/TAD-framework-2025@//localhost:1521/XEPDB1 as sysdba
-
-# Dentro de SQL*Plus, ejecutar el script de creación del esquema
-@/app/sql/01_crear_schema.sql
-
-# Salir de SQL*Plus
-exit;
-
-3. Ejecutar Scripts de Creación de Tablas
-Con el usuario ya creado, podemos conectarnos como ECOMMERCE_FRAMEWORK
-para ejecutar el resto de los scripts (crear tablas, procedimientos, etc.).
-
-# Si saliste del contenedor, vuelve a entrar: docker-compose exec oracle-db bash
-
-# Conectarse como el nuevo usuario
-sqlplus ECOMMERCE_FRAMEWORK/framework123@//localhost:1521/XEPDB1
-
-# Ejecutar el script para crear las tablas
-@/app/sql/02_crear_tablas.sql
-
-# (Aquí se ejecutarían los demás scripts en orden)
-# @/app/sql/03_... .sql
-# etc.
-
-# Salir de SQL*Plus
-exit;
-
-# Salir del contenedor
-exit;
 ```
+Construye, levanta y muestra los logs de la BD.
+```bash
+docker-compose up -d --build && docker-compose logs -f oracle-db
+```
+*¿Qué verás?* Primero, verás a Docker construir la imagen.
+
+Luego, los logs empezarán a fluir. Puede tardar entre 2 y 5 minutos.
+
+### Paso 2: Laburo
+Luego de un tiempo la BD estara viva, configurada y esperando tus órdenes.
+Ya puedes conectarte para empezar a trabajar.
+#### Entrar al contenedor:
+```bash
+docker-compose exec oracle-db bash
+```
+#### Conectarse como usuario:
+```bash
+sqlplus ECOMMERCE_FRAMEWORK/framework123@//localhost:1521/XEPDB1
+```
+
+
 
 
 
