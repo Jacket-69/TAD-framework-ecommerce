@@ -1,25 +1,28 @@
-version: '3.8'
-
 services:
   oracle-db:
-    image: jacket69/tad-framework-ecommerce:latest
+    # Usaremos el Dockerfile local para construir una imagen personalizada
+    # que incluye nuestros scripts de inicialización.
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: tad_oracle_db
     ports:
       - "1521:1521"
     environment:
-      # Definimos una contraseña específica y segura para este proyecto.
+      # Esta contraseña SECRETA se pasa a nuestro script entrypoint.sh
       - ORACLE_PWD=TAD-framework-2025
     volumes:
-      # Este volumen asegura que los datos de la BD no se borren si el contenedor se elimina.
+      # Este volumen es MUY importante. Asegura que los datos de la BD
+      # no se borren aunque eliminemos el contenedor.
       - oracle-data:/opt/oracle/oradata
-      # Monta la carpeta ./sql de tu PC en la carpeta /app/sql dentro del contenedor.
-      - ./sql:/app/sql
     healthcheck:
-      # Esta prueba verifica que la base de datos (PDB) esté lista para aceptar conexiones.
-      test: ["CMD", "sh", "-c", "echo 'SELECT 1 FROM DUAL;' | sqlplus -s sys/TAD-framework-2025@//localhost:1521/XEPDB1 as sysdba"]
+      # La prueba ahora va a ver si puede conectar con el usuario final de la app,
+      # lo cual es una mejor verificación de que todo está listo. 🧐
+      test: ["CMD-SHELL", "echo 'select 1 from dual;' | sqlplus -s ECOMMERCE_FRAMEWORK/framework123@//localhost:1521/XEPDB1"]
       interval: 30s
       timeout: 10s
       retries: 5
+      start_period: 15s # Le damos 15s minutos para que arranque e inicialice todo.
 
 volumes:
   oracle-data:
