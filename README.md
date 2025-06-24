@@ -75,8 +75,11 @@ docker-compose exec oracle-db bash
 ```bash
 sqlplus ECOMMERCE_FRAMEWORK/framework123@//localhost:1521/XEPDB1
 ```
-
-
+### Adicional: Poblar con Datos de Prueba
+Si quieres tener algunos datos de ejemplo para probar tus propias consultas o funciones, puedes ejecutar el script de prueba. Conéctate como el usuario ECOMMERCE_FRAMEWORK y ejecuta:
+```bash
+@/app/sql/03_poblar_datos_prueba.sql
+```
 
 
 
