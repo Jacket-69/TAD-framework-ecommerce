@@ -461,4 +461,103 @@ END;
 
 PROMPT Cuarto trigger de auditoria creado (tabla pedidos) 🥲
 
+
+-- Trigger para registrar auditoría de la tabla DETALLES_PEDIDO
+CREATE OR REPLACE TRIGGER trg_detalles_pedido_audit
+AFTER INSERT OR UPDATE OR DELETE ON detalles_pedido
+FOR EACH ROW
+DECLARE
+    v_old_values CLOB;
+    v_new_values CLOB;
+BEGIN
+    IF INSERTING THEN
+        v_new_values := 'detalle_id: ' || :NEW.detalle_id ||
+                        ' | pedido_id: ' || :NEW.pedido_id ||
+                        ' | fecha_pedido_fk: ' || TO_CHAR(:NEW.fecha_pedido_fk, 'YYYY-MM-DD HH24:MI:SS') ||
+                        ' | producto_id: ' || :NEW.producto_id ||
+                        ' | cantidad: ' || :NEW.cantidad ||
+                        ' | precio_unitario: ' || :NEW.precio_unitario;
+        INSERT INTO tabla_auditoria (nombre_tabla, tipo_operacion, registro_id, valores_nuevos, usuario_accion, fecha_accion)
+        VALUES ('detalles_pedido', 'INSERT', :NEW.detalle_id, v_new_values, USER, SYSDATE);
+    ELSIF UPDATING THEN
+        v_old_values := 'detalle_id: ' || :OLD.detalle_id ||
+                        ' | pedido_id: ' || :OLD.pedido_id ||
+                        ' | fecha_pedido_fk: ' || TO_CHAR(:OLD.fecha_pedido_fk, 'YYYY-MM-DD HH24:MI:SS') ||
+                        ' | producto_id: ' || :OLD.producto_id ||
+                        ' | cantidad: ' || :OLD.cantidad ||
+                        ' | precio_unitario: ' || :OLD.precio_unitario;
+        v_new_values := 'detalle_id: ' || :NEW.detalle_id ||
+                        ' | pedido_id: ' || :NEW.pedido_id ||
+                        ' | fecha_pedido_fk: ' || TO_CHAR(:NEW.fecha_pedido_fk, 'YYYY-MM-DD HH24:MI:SS') ||
+                        ' | producto_id: ' || :NEW.producto_id ||
+                        ' | cantidad: ' || :NEW.cantidad ||
+                        ' | precio_unitario: ' || :NEW.precio_unitario;
+        INSERT INTO tabla_auditoria (nombre_tabla, tipo_operacion, registro_id, valores_antiguos, valores_nuevos, usuario_accion, fecha_accion)
+        VALUES ('detalles_pedido', 'UPDATE', :NEW.detalle_id, v_old_values, v_new_values, USER, SYSDATE);
+    ELSIF DELETING THEN
+        v_old_values := 'detalle_id: ' || :OLD.detalle_id ||
+                        ' | pedido_id: ' || :OLD.pedido_id ||
+                        ' | fecha_pedido_fk: ' || TO_CHAR(:OLD.fecha_pedido_fk, 'YYYY-MM-DD HH24:MI:SS') ||
+                        ' | producto_id: ' || :OLD.producto_id ||
+                        ' | cantidad: ' || :OLD.cantidad ||
+                        ' | precio_unitario: ' || :OLD.precio_unitario;
+        INSERT INTO tabla_auditoria (nombre_tabla, tipo_operacion, registro_id, valores_antiguos, usuario_accion, fecha_accion)
+        VALUES ('detalles_pedido', 'DELETE', :OLD.detalle_id, v_old_values, USER, SYSDATE);
+    END IF;
+END;
+/
+
+PROMPT Quinto trigger de auditoria creado (tabla detalles_pedido) 😭🔫
+
+-- Trigger para registrar auditoría de la tabla PAGOS
+CREATE OR REPLACE TRIGGER trg_pagos_audit
+AFTER INSERT OR UPDATE OR DELETE ON pagos
+FOR EACH ROW
+DECLARE
+    v_old_values CLOB;
+    v_new_values CLOB;
+BEGIN
+    IF INSERTING THEN
+        v_new_values := 'pago_id: ' || :NEW.pago_id ||
+                        ' | pedido_id: ' || :NEW.pedido_id ||
+                        ' | fecha_pedido_fk: ' || TO_CHAR(:NEW.fecha_pedido_fk, 'YYYY-MM-DD HH24:MI:SS') ||
+                        ' | monto: ' || :NEW.monto ||
+                        ' | fecha_pago: ' || TO_CHAR(:NEW.fecha_pago, 'YYYY-MM-DD HH24:MI:SS') ||
+                        ' | metodo_pago: ' || :NEW.metodo_pago ||
+                        ' | estado_pago: ' || :NEW.estado_pago;
+        INSERT INTO tabla_auditoria (nombre_tabla, tipo_operacion, registro_id, valores_nuevos, usuario_accion, fecha_accion)
+        VALUES ('pagos', 'INSERT', :NEW.pago_id, v_new_values, USER, SYSDATE);
+    ELSIF UPDATING THEN
+        v_old_values := 'pago_id: ' || :OLD.pago_id ||
+                        ' | pedido_id: ' || :OLD.pedido_id ||
+                        ' | fecha_pedido_fk: ' || TO_CHAR(:OLD.fecha_pedido_fk, 'YYYY-MM-DD HH24:MI:SS') ||
+                        ' | monto: ' || :OLD.monto ||
+                        ' | fecha_pago: ' || TO_CHAR(:OLD.fecha_pago, 'YYYY-MM-DD HH24:MI:SS') ||
+                        ' | metodo_pago: ' || :OLD.metodo_pago ||
+                        ' | estado_pago: ' || :OLD.estado_pago;
+        v_new_values := 'pago_id: ' || :NEW.pago_id ||
+                        ' | pedido_id: ' || :NEW.pedido_id ||
+                        ' | fecha_pedido_fk: ' || TO_CHAR(:NEW.fecha_pedido_fk, 'YYYY-MM-DD HH24:MI:SS') ||
+                        ' | monto: ' || :NEW.monto ||
+                        ' | fecha_pago: ' || TO_CHAR(:NEW.fecha_pago, 'YYYY-MM-DD HH24:MI:SS') ||
+                        ' | metodo_pago: ' || :NEW.metodo_pago ||
+                        ' | estado_pago: ' || :NEW.estado_pago;
+        INSERT INTO tabla_auditoria (nombre_tabla, tipo_operacion, registro_id, valores_antiguos, valores_nuevos, usuario_accion, fecha_accion)
+        VALUES ('pagos', 'UPDATE', :NEW.pago_id, v_old_values, v_new_values, USER, SYSDATE);
+    ELSIF DELETING THEN
+        v_old_values := 'pago_id: ' || :OLD.pago_id ||
+                        ' | pedido_id: ' || :OLD.pedido_id ||
+                        ' | fecha_pedido_fk: ' || TO_CHAR(:OLD.fecha_pedido_fk, 'YYYY-MM-DD HH24:MI:SS') ||
+                        ' | monto: ' || :OLD.monto ||
+                        ' | fecha_pago: ' || TO_CHAR(:OLD.fecha_pago, 'YYYY-MM-DD HH24:MI:SS') ||
+                        ' | metodo_pago: ' || :OLD.metodo_pago ||
+                        ' | estado_pago: ' || :OLD.estado_pago;
+        INSERT INTO tabla_auditoria (nombre_tabla, tipo_operacion, registro_id, valores_antiguos, usuario_accion, fecha_accion)
+        VALUES ('pagos', 'DELETE', :OLD.pago_id, v_old_values, USER, SYSDATE);
+    END IF;
+END;
+/
+
+PROMPT Sexto trigger de auditoria creado (tabla pagos) 💀
+
 PROMPT --- 🤑 ESTRUCTURA DE BASE DE DATOS CREADA EXITOSAMENTE 🤑 ---
