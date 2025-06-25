@@ -24,8 +24,11 @@ La gerencia no tiene claro cuales son los principales flujos que deberían ser s
 * **Herramientas:** SQL*Plus (vía terminal).
 
 ## Diagramas de la BD
-### dbdiagram:
+### Base de Datos:
 ![dbdiagram-framework-ecommerce](https://github.com/user-attachments/assets/51a7d19c-6467-4498-8b7c-9a987d36bd3a)
+
+### Data Warehouse y Auditoria
+![data-warehouse](https://raw.githubusercontent.com/Jacket-69/TAD-framework-ecommerce/f4525daf540098da95292639b42349b430ccc678/doc/data_warehouse.png)
 
 ### Lucidchart:
 ![MER-framework-ecommerce](https://github.com/user-attachments/assets/52ee832d-17d5-48f5-9120-66c9a5cf02ac)
