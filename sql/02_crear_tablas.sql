@@ -363,6 +363,102 @@ END;
 
 PROMPT Segundo trigger de auditoria creado (tabla usuarios) 😔
 
+-- Trigger para registrar auditoría de la tabla PRODUCTOS
+CREATE OR REPLACE TRIGGER trg_productos_audit
+AFTER INSERT OR UPDATE OR DELETE ON productos
+FOR EACH ROW
+DECLARE
+    v_old_values CLOB;
+    v_new_values CLOB;
+BEGIN
+    IF INSERTING THEN
+        v_new_values := 'producto_id: ' || :NEW.producto_id ||
+                        ' | tienda_id: ' || :NEW.tienda_id ||
+                        ' | nombre: ' || :NEW.nombre ||
+                        ' | descripcion: ' || :NEW.descripcion ||
+                        ' | precio: ' || :NEW.precio ||
+                        ' | stock: ' || :NEW.stock ||
+                        ' | sku: ' || :NEW.sku;
+        INSERT INTO tabla_auditoria (nombre_tabla, tipo_operacion, registro_id, valores_nuevos, usuario_accion, fecha_accion)
+        VALUES ('productos', 'INSERT', :NEW.producto_id, v_new_values, USER, SYSDATE);
+    ELSIF UPDATING THEN
+        v_old_values := 'producto_id: ' || :OLD.producto_id ||
+                        ' | tienda_id: ' || :OLD.tienda_id ||
+                        ' | nombre: ' || :OLD.nombre ||
+                        ' | descripcion: ' || :OLD.descripcion ||
+                        ' | precio: ' || :OLD.precio ||
+                        ' | stock: ' || :OLD.stock ||
+                        ' | sku: ' || :OLD.sku;
+        v_new_values := 'producto_id: ' || :NEW.producto_id ||
+                        ' | tienda_id: ' || :NEW.tienda_id ||
+                        ' | nombre: ' || :NEW.nombre ||
+                        ' | descripcion: ' || :NEW.descripcion ||
+                        ' | precio: ' || :NEW.precio ||
+                        ' | stock: ' || :NEW.stock ||
+                        ' | sku: ' || :NEW.sku;
+        INSERT INTO tabla_auditoria (nombre_tabla, tipo_operacion, registro_id, valores_antiguos, valores_nuevos, usuario_accion, fecha_accion)
+        VALUES ('productos', 'UPDATE', :NEW.producto_id, v_old_values, v_new_values, USER, SYSDATE);
+    ELSIF DELETING THEN
+        v_old_values := 'producto_id: ' || :OLD.producto_id ||
+                        ' | tienda_id: ' || :OLD.tienda_id ||
+                        ' | nombre: ' || :OLD.nombre ||
+                        ' | descripcion: ' || :OLD.descripcion ||
+                        ' | precio: ' || :OLD.precio ||
+                        ' | stock: ' || :OLD.stock ||
+                        ' | sku: ' || :OLD.sku;
+        INSERT INTO tabla_auditoria (nombre_tabla, tipo_operacion, registro_id, valores_antiguos, usuario_accion, fecha_accion)
+        VALUES ('productos', 'DELETE', :OLD.producto_id, v_old_values, USER, SYSDATE);
+    END IF;
+END;
+/
 
+PROMPT Tercer trigger de auditoria creado (tabla productos) 😟
+
+-- Trigger para registrar auditoría de la tabla PEDIDOS
+CREATE OR REPLACE TRIGGER trg_pedidos_audit
+AFTER INSERT OR UPDATE OR DELETE ON pedidos
+FOR EACH ROW
+DECLARE
+    v_old_values CLOB;
+    v_new_values CLOB;
+BEGIN
+    IF INSERTING THEN
+        v_new_values := 'pedido_id: ' || :NEW.pedido_id ||
+                        ' | usuario_id: ' || :NEW.usuario_id ||
+                        ' | direccion_envio_id: ' || :NEW.direccion_envio_id ||
+                        ' | fecha_pedido: ' || TO_CHAR(:NEW.fecha_pedido, 'YYYY-MM-DD HH24:MI:SS') ||
+                        ' | estado: ' || :NEW.estado ||
+                        ' | total: ' || :NEW.total;
+        INSERT INTO tabla_auditoria (nombre_tabla, tipo_operacion, registro_id, valores_nuevos, usuario_accion, fecha_accion)
+        VALUES ('pedidos', 'INSERT', :NEW.pedido_id, v_new_values, USER, SYSDATE);
+    ELSIF UPDATING THEN
+        v_old_values := 'pedido_id: ' || :OLD.pedido_id ||
+                        ' | usuario_id: ' || :OLD.usuario_id ||
+                        ' | direccion_envio_id: ' || :OLD.direccion_envio_id ||
+                        ' | fecha_pedido: ' || TO_CHAR(:OLD.fecha_pedido, 'YYYY-MM-DD HH24:MI:SS') ||
+                        ' | estado: ' || :OLD.estado ||
+                        ' | total: ' || :OLD.total;
+        v_new_values := 'pedido_id: ' || :NEW.pedido_id ||
+                        ' | usuario_id: ' || :NEW.usuario_id ||
+                        ' | direccion_envio_id: ' || :NEW.direccion_envio_id ||
+                        ' | fecha_pedido: ' || TO_CHAR(:NEW.fecha_pedido, 'YYYY-MM-DD HH24:MI:SS') ||
+                        ' | estado: ' || :NEW.estado ||
+                        ' | total: ' || :NEW.total;
+        INSERT INTO tabla_auditoria (nombre_tabla, tipo_operacion, registro_id, valores_antiguos, valores_nuevos, usuario_accion, fecha_accion)
+        VALUES ('pedidos', 'UPDATE', :NEW.pedido_id, v_old_values, v_new_values, USER, SYSDATE);
+    ELSIF DELETING THEN
+        v_old_values := 'pedido_id: ' || :OLD.pedido_id ||
+                        ' | usuario_id: ' || :OLD.usuario_id ||
+                        ' | direccion_envio_id: ' || :OLD.direccion_envio_id ||
+                        ' | fecha_pedido: ' || TO_CHAR(:OLD.fecha_pedido, 'YYYY-MM-DD HH24:MI:SS') ||
+                        ' | estado: ' || :OLD.estado ||
+                        ' | total: ' || :OLD.total;
+        INSERT INTO tabla_auditoria (nombre_tabla, tipo_operacion, registro_id, valores_antiguos, usuario_accion, fecha_accion)
+        VALUES ('pedidos', 'DELETE', :OLD.pedido_id, v_old_values, USER, SYSDATE);
+    END IF;
+END;
+/
+
+PROMPT Cuarto trigger de auditoria creado (tabla pedidos) 🥲
 
 PROMPT --- 🤑 ESTRUCTURA DE BASE DE DATOS CREADA EXITOSAMENTE 🤑 ---
