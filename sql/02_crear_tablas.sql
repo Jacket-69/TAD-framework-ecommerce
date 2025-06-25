@@ -218,7 +218,7 @@ CREATE TABLE Dim_Tiempo (
     trimestre        NUMBER,
     nombre_mes       VARCHAR2(20),
     dia_semana       VARCHAR2(15)
-)
+);
 
 PROMPT Dimension de tiempo creada con exito
 
@@ -229,7 +229,7 @@ CREATE TABLE Dim_Producto (
     descripcion      CLOB,
     precio           NUMBER(10,2),
     sku              VARCHAR2(50)
-)
+);
 
 PROMPT Dimension de producto creada con exito
 
@@ -240,7 +240,7 @@ CREATE TABLE Dim_Usuario (
     apellido         VARCHAR2(50),
     email            VARCHAR2(100),
     tienda_id        NUMBER
-)
+);
 
 PROMPT Dimension de usuario creada con exito
 
@@ -250,7 +250,7 @@ CREATE TABLE Dim_Tienda (
     nombre           VARCHAR2(100),
     url_dominio      VARCHAR2(100),
     fecha_creacion   DATE
-)
+);
 
 PROMPT Dimension de tienda creada con exito
 
@@ -267,7 +267,7 @@ CREATE TABLE tabla_auditoria (
     fecha_accion        DATE DEFAULT SYSDATE NOT NULL,      -- Marca de tiempo de la acción
     CONSTRAINT pk_tabla_auditoria PRIMARY KEY (auditoria_id),
     CONSTRAINT chk_tipo_operacion CHECK (tipo_operacion IN ('INSERT', 'UPDATE', 'DELETE'))
-)
+);
 
 PROMPT se crea la tabla auditoria, de aqui vigilamo toh. corte 1984, su gran hermanito
 
@@ -314,7 +314,54 @@ END;
 
 PROMPT primer trigger de auditoria creado (tabla tiendas)
 
+-- Trigger para registrar auditoría de la tabla USUARIOS
+CREATE OR REPLACE TRIGGER trg_usuarios_audit
+AFTER INSERT OR UPDATE OR DELETE ON usuarios
+FOR EACH ROW
+DECLARE
+    v_old_values CLOB;
+    v_new_values CLOB;
+BEGIN
+    IF INSERTING THEN
+        v_new_values := 'usuario_id: ' || :NEW.usuario_id ||
+                        ' | tienda_id: ' || :NEW.tienda_id ||
+                        ' | email: ' || :NEW.email ||
+                        ' | nombre: ' || :NEW.nombre ||
+                        ' | apellido: ' || :NEW.apellido ||
+                        ' | fecha_registro: ' || TO_CHAR(:NEW.fecha_registro, 'YYYY-MM-DD HH24:MI:SS');
+        INSERT INTO tabla_auditoria (nombre_tabla, tipo_operacion, registro_id, valores_nuevos, usuario_accion, fecha_accion)
+        VALUES ('usuarios', 'INSERT', :NEW.usuario_id, v_new_values, USER, SYSDATE);
+    ELSIF UPDATING THEN
+        v_old_values := 'usuario_id: ' || :OLD.usuario_id ||
+                        ' | tienda_id: ' || :OLD.tienda_id ||
+                        ' | email: ' || :OLD.email ||
+                        ' | password_hash: ' || :OLD.password_hash ||
+                        ' | nombre: ' || :OLD.nombre ||
+                        ' | apellido: ' || :OLD.apellido ||
+                        ' | fecha_registro: ' || TO_CHAR(:OLD.fecha_registro, 'YYYY-MM-DD HH24:MI:SS');
+        v_new_values := 'usuario_id: ' || :NEW.usuario_id ||
+                        ' | tienda_id: ' || :NEW.tienda_id ||
+                        ' | email: ' || :NEW.email ||
+                        ' | password_hash: ' || :NEW.password_hash ||
+                        ' | nombre: ' || :NEW.nombre ||
+                        ' | apellido: ' || :NEW.apellido ||
+                        ' | fecha_registro: ' || TO_CHAR(:NEW.fecha_registro, 'YYYY-MM-DD HH24:MI:SS');
+        INSERT INTO tabla_auditoria (nombre_tabla, tipo_operacion, registro_id, valores_antiguos, valores_nuevos, usuario_accion, fecha_accion)
+        VALUES ('usuarios', 'UPDATE', :NEW.usuario_id, v_old_values, v_new_values, USER, SYSDATE);
+    ELSIF DELETING THEN
+        v_old_values := 'usuario_id: ' || :OLD.usuario_id ||
+                        ' | tienda_id: ' || :OLD.tienda_id ||
+                        ' | email: ' || :OLD.email ||
+                        ' | nombre: ' || :OLD.nombre ||
+                        ' | apellido: ' || :OLD.apellido ||
+                        ' | fecha_registro: ' || TO_CHAR(:OLD.fecha_registro, 'YYYY-MM-DD HH24:MI:SS');
+        INSERT INTO tabla_auditoria (nombre_tabla, tipo_operacion, registro_id, valores_antiguos, usuario_accion, fecha_accion)
+        VALUES ('usuarios', 'DELETE', :OLD.usuario_id, v_old_values, USER, SYSDATE);
+    END IF;
+END;
+/
 
+PROMPT Segundo trigger de auditoria creado (tabla usuarios) 😔
 
 
 
