@@ -37,8 +37,10 @@ INSERT INTO usuario_roles (usuario_id, rol_id) VALUES (101, 1);
 INSERT INTO usuario_roles (usuario_id, rol_id) VALUES (102, 2);
 INSERT INTO categorias (categoria_id, tienda_id, nombre) VALUES (1, 1, 'Para Correr con Estilo');
 INSERT INTO categorias (categoria_id, tienda_id, nombre) VALUES (2, 1, 'Para Pisar Hormigas');
-INSERT INTO productos (producto_id, tienda_id, nombre, precio, stock) VALUES (1, 1, 'Zapatillas "El Rayo"', 69990, 20);
-INSERT INTO productos (producto_id, tienda_id, nombre, precio, stock) VALUES (2, 1, 'Zapatos "El Gerente"', 42000, 50);
+
+INSERT INTO productos (producto_id, tienda_id, nombre, precio, stock, sku) VALUES (1, 1, 'Zapatillas "El Rayo"', 69990, 20, 'ZAP-RAYO-2025');
+INSERT INTO productos (producto_id, tienda_id, nombre, precio, stock, sku) VALUES (2, 1, 'Zapatos "El Gerente"', 42000, 50, 'ZAP-GERENTE-2025');
+
 INSERT INTO producto_categorias (producto_id, categoria_id) VALUES (1, 1);
 INSERT INTO producto_categorias (producto_id, categoria_id) VALUES (2, 2);
 
@@ -59,4 +61,4 @@ END;
 /
 
 COMMIT;
-PROMPT --- ¡Listo Calisto!
+PROMPT --- ¡Listo Calisto! ---
