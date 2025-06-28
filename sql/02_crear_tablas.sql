@@ -573,4 +573,101 @@ END;
 
 PROMPT Sexto trigger de auditoria creado (tabla pagos) 💀
 
+---CREACION DE ROLES---
+--ROLES:
+--      -ADMINISTRADOR: Acceso total
+--      -VENDEDOR: Acceso limitado a productos y pedidos
+--      -BODEGUERO: Manejar el stock, pero sin modificar ventas ni usuarios.
+--      -ANALISTA: Realiza SELECTS a distintas tablas
+--      -SOPORTE: Acceder a datos de usuarios y pedidos para soporte, sin alterar nada.
+
+CREATE ROLE rol_administrador;
+CREATE ROLE rol_vendedor;
+CREATE ROLE rol_bodeguero;
+CREATE ROLE rol_analista;
+CREATE ROLE rol_soporte;
+
+-- ADMINISTRADOR
+GRANT SELECT, INSERT, UPDATE, DELETE ON tiendas TO rol_administrador;
+GRANT SELECT, INSERT, UPDATE, DELETE ON usuarios TO rol_administrador;
+GRANT SELECT, INSERT, UPDATE, DELETE ON productos TO rol_administrador;
+GRANT SELECT, INSERT, UPDATE, DELETE ON pedidos TO rol_administrador;
+GRANT SELECT, INSERT, UPDATE, DELETE ON detalles_pedido TO rol_administrador;
+GRANT SELECT, INSERT, UPDATE, DELETE ON pagos TO rol_administrador;
+GRANT SELECT, INSERT, UPDATE, DELETE ON categorias TO rol_administrador;
+GRANT SELECT, INSERT, UPDATE, DELETE ON producto_categorias TO rol_administrador;
+GRANT SELECT, INSERT, UPDATE, DELETE ON direcciones TO rol_administrador;
+GRANT SELECT, INSERT, UPDATE, DELETE ON tabla_auditoria TO rol_administrador;
+GRANT SELECT, INSERT, UPDATE, DELETE ON usuario_roles TO rol_administrador;
+GRANT SELECT, INSERT, UPDATE, DELETE ON roles TO rol_administrador;
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON Dim_Tiempo TO rol_administrador;
+GRANT SELECT, INSERT, UPDATE, DELETE ON Dim_Producto TO rol_administrador;
+GRANT SELECT, INSERT, UPDATE, DELETE ON Dim_Usuario TO rol_administrador;
+GRANT SELECT, INSERT, UPDATE, DELETE ON Dim_Tienda TO rol_administrador;
+GRANT SELECT, INSERT, UPDATE, DELETE ON Hecho_Ventas TO rol_administrador;
+
+-- VENDEDOR
+GRANT SELECT, INSERT, UPDATE ON pedidos TO rol_vendedor;
+GRANT SELECT, INSERT ON detalles_pedido TO rol_vendedor;
+GRANT SELECT, INSERT ON productos TO rol_vendedor;
+GRANT SELECT ON usuarios TO rol_vendedor;
+
+-- BODEGUERO
+GRANT SELECT ON pedidos TO rol_bodeguero;
+-- Acceso a lectura de productos y solo modificar el stock
+GRANT SELECT ON productos TO rol_bodeguero;
+GRANT UPDATE (stock, sku) ON productos TO rol_bodeguero;
+
+-- ANALISTA
+GRANT SELECT ON Dim_Tiempo TO rol_analista;
+GRANT SELECT ON Dim_Producto TO rol_analista;
+GRANT SELECT ON Dim_Usuario TO rol_analista;
+GRANT SELECT ON Dim_Tienda TO rol_analista;
+GRANT SELECT ON Hecho_Ventas TO rol_analista;
+GRANT SELECT ON tabla_auditoria TO rol_analista;
+
+-- SOPORTE
+GRANT SELECT ON usuarios TO rol_soporte;
+GRANT SELECT ON pedidos TO rol_soporte;
+GRANT SELECT ON pagos TO rol_soporte;
+GRANT SELECT ON direcciones TO rol_soporte;
+
+-- USUARIO ADMINISTRADOR
+CREATE USER admin_user IDENTIFIED BY admin_pass;
+GRANT CONNECT TO admin_user;
+ALTER USER admin_user DEFAULT TABLESPACE users;
+ALTER USER admin_user QUOTA UNLIMITED ON users;
+GRANT rol_administrador TO admin_user;
+
+-- USUARIO VENDEDOR
+CREATE USER vendedor_user IDENTIFIED BY vendedor_pass;
+GRANT CONNECT TO vendedor_user;
+ALTER USER vendedor_user DEFAULT TABLESPACE users;
+ALTER USER vendedor_user QUOTA UNLIMITED ON users;
+GRANT rol_vendedor TO vendedor_user;
+
+-- USUARIO BODEGUERO
+CREATE USER bodeguero_user IDENTIFIED BY bodeguero_pass;
+GRANT CONNECT TO bodeguero_user;
+ALTER USER bodeguero_user DEFAULT TABLESPACE users;
+ALTER USER bodeguero_user QUOTA UNLIMITED ON users;
+GRANT rol_bodeguero TO bodeguero_user;
+
+-- USUARIO ANALISTA
+CREATE USER analista_user IDENTIFIED BY analista_pass;
+GRANT CONNECT TO analista_user;
+ALTER USER analista_user DEFAULT TABLESPACE users;
+ALTER USER analista_user QUOTA UNLIMITED ON users;
+GRANT rol_analista TO analista_user;
+
+-- USUARIO SOPORTE
+CREATE USER soporte_user IDENTIFIED BY soporte_pass;
+GRANT CONNECT TO soporte_user;
+ALTER USER soporte_user DEFAULT TABLESPACE users;
+ALTER USER soporte_user QUOTA UNLIMITED ON users;
+GRANT rol_soporte TO soporte_user;
+
+PROMPT --- 🤑 ROLES Y USUARIOS CREADOS 🤑 ---
+
 PROMPT --- 🤑 ESTRUCTURA DE BASE DE DATOS CREADA EXITOSAMENTE 🤑 ---
