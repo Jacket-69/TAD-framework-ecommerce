@@ -292,6 +292,8 @@ FOR EACH ROW
 DECLARE
     v_old_values CLOB;
     v_new_values CLOB;
+    v_usuario_app VARCHAR2(100) := SYS_CONTEXT('USERENV', 'CLIENT_IDENTIFIER');
+
 BEGIN
     IF INSERTING THEN
         -- Para INSERT, los valores antiguos son nulos, los nuevos son los insertados
@@ -300,7 +302,7 @@ BEGIN
                         ' | url_dominio: ' || :NEW.url_dominio ||
                         ' | fecha_creacion: ' || TO_CHAR(:NEW.fecha_creacion, 'YYYY-MM-DD HH24:MI:SS');
         INSERT INTO tabla_auditoria (nombre_tabla, tipo_operacion, registro_id, valores_nuevos, usuario_accion, fecha_accion)
-        VALUES ('tiendas', 'INSERT', :NEW.tienda_id, v_new_values, USER, SYSDATE);
+        VALUES ('tiendas', 'INSERT', :NEW.tienda_id, v_new_values, v_usuario_app, SYSDATE);
     ELSIF UPDATING THEN
         -- Para UPDATE, se registran los valores antiguos y los nuevos
         v_old_values := 'tienda_id: ' || :OLD.tienda_id ||
@@ -312,7 +314,7 @@ BEGIN
                         ' | url_dominio: ' || :NEW.url_dominio ||
                         ' | fecha_creacion: ' || TO_CHAR(:NEW.fecha_creacion, 'YYYY-MM-DD HH24:MI:SS');
         INSERT INTO tabla_auditoria (nombre_tabla, tipo_operacion, registro_id, valores_antiguos, valores_nuevos, usuario_accion, fecha_accion)
-        VALUES ('tiendas', 'UPDATE', :NEW.tienda_id, v_old_values, v_new_values, USER, SYSDATE);
+        VALUES ('tiendas', 'UPDATE', :NEW.tienda_id, v_old_values, v_new_values, v_usuario_app, SYSDATE);
     ELSIF DELETING THEN
         -- Para DELETE, solo se registran los valores antiguos (los que fueron eliminados)
         v_old_values := 'tienda_id: ' || :OLD.tienda_id ||
@@ -320,7 +322,7 @@ BEGIN
                         ' | url_dominio: ' || :OLD.url_dominio ||
                         ' | fecha_creacion: ' || TO_CHAR(:OLD.fecha_creacion, 'YYYY-MM-DD HH24:MI:SS');
         INSERT INTO tabla_auditoria (nombre_tabla, tipo_operacion, registro_id, valores_antiguos, usuario_accion, fecha_accion)
-        VALUES ('tiendas', 'DELETE', :OLD.tienda_id, v_old_values, USER, SYSDATE);
+        VALUES ('tiendas', 'DELETE', :OLD.tienda_id, v_old_values, v_usuario_app, SYSDATE);
     END IF;
 END;
 /
@@ -334,6 +336,7 @@ FOR EACH ROW
 DECLARE
     v_old_values CLOB;
     v_new_values CLOB;
+    v_usuario_app VARCHAR2(100) := SYS_CONTEXT('USERENV', 'CLIENT_IDENTIFIER');
 BEGIN
     IF INSERTING THEN
         v_new_values := 'usuario_id: ' || :NEW.usuario_id ||
@@ -343,7 +346,7 @@ BEGIN
                         ' | apellido: ' || :NEW.apellido ||
                         ' | fecha_registro: ' || TO_CHAR(:NEW.fecha_registro, 'YYYY-MM-DD HH24:MI:SS');
         INSERT INTO tabla_auditoria (nombre_tabla, tipo_operacion, registro_id, valores_nuevos, usuario_accion, fecha_accion)
-        VALUES ('usuarios', 'INSERT', :NEW.usuario_id, v_new_values, USER, SYSDATE);
+        VALUES ('usuarios', 'INSERT', :NEW.usuario_id, v_new_values, v_usuario_app, SYSDATE);
     ELSIF UPDATING THEN
         v_old_values := 'usuario_id: ' || :OLD.usuario_id ||
                         ' | tienda_id: ' || :OLD.tienda_id ||
@@ -360,7 +363,7 @@ BEGIN
                         ' | apellido: ' || :NEW.apellido ||
                         ' | fecha_registro: ' || TO_CHAR(:NEW.fecha_registro, 'YYYY-MM-DD HH24:MI:SS');
         INSERT INTO tabla_auditoria (nombre_tabla, tipo_operacion, registro_id, valores_antiguos, valores_nuevos, usuario_accion, fecha_accion)
-        VALUES ('usuarios', 'UPDATE', :NEW.usuario_id, v_old_values, v_new_values, USER, SYSDATE);
+        VALUES ('usuarios', 'UPDATE', :NEW.usuario_id, v_old_values, v_new_values, v_usuario_app, SYSDATE);
     ELSIF DELETING THEN
         v_old_values := 'usuario_id: ' || :OLD.usuario_id ||
                         ' | tienda_id: ' || :OLD.tienda_id ||
@@ -369,7 +372,7 @@ BEGIN
                         ' | apellido: ' || :OLD.apellido ||
                         ' | fecha_registro: ' || TO_CHAR(:OLD.fecha_registro, 'YYYY-MM-DD HH24:MI:SS');
         INSERT INTO tabla_auditoria (nombre_tabla, tipo_operacion, registro_id, valores_antiguos, usuario_accion, fecha_accion)
-        VALUES ('usuarios', 'DELETE', :OLD.usuario_id, v_old_values, USER, SYSDATE);
+        VALUES ('usuarios', 'DELETE', :OLD.usuario_id, v_old_values, v_usuario_app, SYSDATE);
     END IF;
 END;
 /
@@ -383,6 +386,7 @@ FOR EACH ROW
 DECLARE
     v_old_values CLOB;
     v_new_values CLOB;
+    v_usuario_app VARCHAR2(100) := SYS_CONTEXT('USERENV', 'CLIENT_IDENTIFIER');
 BEGIN
     IF INSERTING THEN
         v_new_values := 'producto_id: ' || :NEW.producto_id ||
@@ -393,7 +397,7 @@ BEGIN
                         ' | stock: ' || :NEW.stock ||
                         ' | sku: ' || :NEW.sku;
         INSERT INTO tabla_auditoria (nombre_tabla, tipo_operacion, registro_id, valores_nuevos, usuario_accion, fecha_accion)
-        VALUES ('productos', 'INSERT', :NEW.producto_id, v_new_values, USER, SYSDATE);
+        VALUES ('productos', 'INSERT', :NEW.producto_id, v_new_values, v_usuario_app, SYSDATE);
     ELSIF UPDATING THEN
         v_old_values := 'producto_id: ' || :OLD.producto_id ||
                         ' | tienda_id: ' || :OLD.tienda_id ||
@@ -410,7 +414,7 @@ BEGIN
                         ' | stock: ' || :NEW.stock ||
                         ' | sku: ' || :NEW.sku;
         INSERT INTO tabla_auditoria (nombre_tabla, tipo_operacion, registro_id, valores_antiguos, valores_nuevos, usuario_accion, fecha_accion)
-        VALUES ('productos', 'UPDATE', :NEW.producto_id, v_old_values, v_new_values, USER, SYSDATE);
+        VALUES ('productos', 'UPDATE', :NEW.producto_id, v_old_values, v_new_values, v_usuario_app, SYSDATE);
     ELSIF DELETING THEN
         v_old_values := 'producto_id: ' || :OLD.producto_id ||
                         ' | tienda_id: ' || :OLD.tienda_id ||
@@ -420,7 +424,7 @@ BEGIN
                         ' | stock: ' || :OLD.stock ||
                         ' | sku: ' || :OLD.sku;
         INSERT INTO tabla_auditoria (nombre_tabla, tipo_operacion, registro_id, valores_antiguos, usuario_accion, fecha_accion)
-        VALUES ('productos', 'DELETE', :OLD.producto_id, v_old_values, USER, SYSDATE);
+        VALUES ('productos', 'DELETE', :OLD.producto_id, v_old_values, v_usuario_app, SYSDATE);
     END IF;
 END;
 /
@@ -434,6 +438,7 @@ FOR EACH ROW
 DECLARE
     v_old_values CLOB;
     v_new_values CLOB;
+    v_usuario_app VARCHAR2(100) := SYS_CONTEXT('USERENV', 'CLIENT_IDENTIFIER');
 BEGIN
     IF INSERTING THEN
         v_new_values := 'pedido_id: ' || :NEW.pedido_id ||
@@ -443,7 +448,7 @@ BEGIN
                         ' | estado: ' || :NEW.estado ||
                         ' | total: ' || :NEW.total;
         INSERT INTO tabla_auditoria (nombre_tabla, tipo_operacion, registro_id, valores_nuevos, usuario_accion, fecha_accion)
-        VALUES ('pedidos', 'INSERT', :NEW.pedido_id, v_new_values, USER, SYSDATE);
+        VALUES ('pedidos', 'INSERT', :NEW.pedido_id, v_new_values, v_usuario_app, SYSDATE);
     ELSIF UPDATING THEN
         v_old_values := 'pedido_id: ' || :OLD.pedido_id ||
                         ' | usuario_id: ' || :OLD.usuario_id ||
@@ -458,7 +463,7 @@ BEGIN
                         ' | estado: ' || :NEW.estado ||
                         ' | total: ' || :NEW.total;
         INSERT INTO tabla_auditoria (nombre_tabla, tipo_operacion, registro_id, valores_antiguos, valores_nuevos, usuario_accion, fecha_accion)
-        VALUES ('pedidos', 'UPDATE', :NEW.pedido_id, v_old_values, v_new_values, USER, SYSDATE);
+        VALUES ('pedidos', 'UPDATE', :NEW.pedido_id, v_old_values, v_new_values, v_usuario_app, SYSDATE);
     ELSIF DELETING THEN
         v_old_values := 'pedido_id: ' || :OLD.pedido_id ||
                         ' | usuario_id: ' || :OLD.usuario_id ||
@@ -467,7 +472,7 @@ BEGIN
                         ' | estado: ' || :OLD.estado ||
                         ' | total: ' || :OLD.total;
         INSERT INTO tabla_auditoria (nombre_tabla, tipo_operacion, registro_id, valores_antiguos, usuario_accion, fecha_accion)
-        VALUES ('pedidos', 'DELETE', :OLD.pedido_id, v_old_values, USER, SYSDATE);
+        VALUES ('pedidos', 'DELETE', :OLD.pedido_id, v_old_values, v_usuario_app, SYSDATE);
     END IF;
 END;
 /
@@ -482,6 +487,8 @@ FOR EACH ROW
 DECLARE
     v_old_values CLOB;
     v_new_values CLOB;
+    v_usuario_app VARCHAR2(100) := SYS_CONTEXT('USERENV', 'CLIENT_IDENTIFIER');
+
 BEGIN
     IF INSERTING THEN
         v_new_values := 'detalle_id: ' || :NEW.detalle_id ||
@@ -491,7 +498,7 @@ BEGIN
                         ' | cantidad: ' || :NEW.cantidad ||
                         ' | precio_unitario: ' || :NEW.precio_unitario;
         INSERT INTO tabla_auditoria (nombre_tabla, tipo_operacion, registro_id, valores_nuevos, usuario_accion, fecha_accion)
-        VALUES ('detalles_pedido', 'INSERT', :NEW.detalle_id, v_new_values, USER, SYSDATE);
+        VALUES ('detalles_pedido', 'INSERT', :NEW.detalle_id, v_new_values, v_usuario_app, SYSDATE);
     ELSIF UPDATING THEN
         v_old_values := 'detalle_id: ' || :OLD.detalle_id ||
                         ' | pedido_id: ' || :OLD.pedido_id ||
@@ -506,7 +513,7 @@ BEGIN
                         ' | cantidad: ' || :NEW.cantidad ||
                         ' | precio_unitario: ' || :NEW.precio_unitario;
         INSERT INTO tabla_auditoria (nombre_tabla, tipo_operacion, registro_id, valores_antiguos, valores_nuevos, usuario_accion, fecha_accion)
-        VALUES ('detalles_pedido', 'UPDATE', :NEW.detalle_id, v_old_values, v_new_values, USER, SYSDATE);
+        VALUES ('detalles_pedido', 'UPDATE', :NEW.detalle_id, v_old_values, v_new_values, v_usuario_app, SYSDATE);
     ELSIF DELETING THEN
         v_old_values := 'detalle_id: ' || :OLD.detalle_id ||
                         ' | pedido_id: ' || :OLD.pedido_id ||
@@ -515,7 +522,7 @@ BEGIN
                         ' | cantidad: ' || :OLD.cantidad ||
                         ' | precio_unitario: ' || :OLD.precio_unitario;
         INSERT INTO tabla_auditoria (nombre_tabla, tipo_operacion, registro_id, valores_antiguos, usuario_accion, fecha_accion)
-        VALUES ('detalles_pedido', 'DELETE', :OLD.detalle_id, v_old_values, USER, SYSDATE);
+        VALUES ('detalles_pedido', 'DELETE', :OLD.detalle_id, v_old_values, v_usuario_app, SYSDATE);
     END IF;
 END;
 /
@@ -529,6 +536,7 @@ FOR EACH ROW
 DECLARE
     v_old_values CLOB;
     v_new_values CLOB;
+    v_usuario_app VARCHAR2(100) := SYS_CONTEXT('USERENV', 'CLIENT_IDENTIFIER');
 BEGIN
     IF INSERTING THEN
         v_new_values := 'pago_id: ' || :NEW.pago_id ||
@@ -539,7 +547,7 @@ BEGIN
                         ' | metodo_pago: ' || :NEW.metodo_pago ||
                         ' | estado_pago: ' || :NEW.estado_pago;
         INSERT INTO tabla_auditoria (nombre_tabla, tipo_operacion, registro_id, valores_nuevos, usuario_accion, fecha_accion)
-        VALUES ('pagos', 'INSERT', :NEW.pago_id, v_new_values, USER, SYSDATE);
+        VALUES ('pagos', 'INSERT', :NEW.pago_id, v_new_values, v_usuario_app, SYSDATE);
     ELSIF UPDATING THEN
         v_old_values := 'pago_id: ' || :OLD.pago_id ||
                         ' | pedido_id: ' || :OLD.pedido_id ||
@@ -556,7 +564,7 @@ BEGIN
                         ' | metodo_pago: ' || :NEW.metodo_pago ||
                         ' | estado_pago: ' || :NEW.estado_pago;
         INSERT INTO tabla_auditoria (nombre_tabla, tipo_operacion, registro_id, valores_antiguos, valores_nuevos, usuario_accion, fecha_accion)
-        VALUES ('pagos', 'UPDATE', :NEW.pago_id, v_old_values, v_new_values, USER, SYSDATE);
+        VALUES ('pagos', 'UPDATE', :NEW.pago_id, v_old_values, v_new_values, v_usuario_app, SYSDATE);
     ELSIF DELETING THEN
         v_old_values := 'pago_id: ' || :OLD.pago_id ||
                         ' | pedido_id: ' || :OLD.pedido_id ||
@@ -566,7 +574,7 @@ BEGIN
                         ' | metodo_pago: ' || :OLD.metodo_pago ||
                         ' | estado_pago: ' || :OLD.estado_pago;
         INSERT INTO tabla_auditoria (nombre_tabla, tipo_operacion, registro_id, valores_antiguos, usuario_accion, fecha_accion)
-        VALUES ('pagos', 'DELETE', :OLD.pago_id, v_old_values, USER, SYSDATE);
+        VALUES ('pagos', 'DELETE', :OLD.pago_id, v_old_values, v_usuario_app, SYSDATE);
     END IF;
 END;
 /
@@ -576,12 +584,134 @@ PROMPT Sexto trigger de auditoria creado (tabla pagos) 💀
 ---CREACION DE ROLES---
 --ROLES:
 --      -ADMINISTRADOR: Acceso total
+--      -ADMINISTRADOR_TIENDA: Acceso a todas las tablas, pero solo a los datos de su tienda.
 --      -VENDEDOR: Acceso limitado a productos y pedidos
 --      -BODEGUERO: Manejar el stock, pero sin modificar ventas ni usuarios.
 --      -ANALISTA: Realiza SELECTS a distintas tablas
 --      -SOPORTE: Acceder a datos de usuarios y pedidos para soporte, sin alterar nada.
 
+CREATE OR REPLACE FUNCTION f_get_tienda_id
+RETURN NUMBER IS
+  v_id NUMBER;
+BEGIN
+  SELECT tienda_id INTO v_id
+  FROM usuarios
+  WHERE email = SYS_CONTEXT('USERENV', 'CLIENT_IDENTIFIER');
+  RETURN v_id;
+EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+    RETURN NULL;
+END;
+/
+
+-- PRODUCTOS
+CREATE OR REPLACE VIEW v_productos AS
+SELECT *
+FROM productos
+WHERE tienda_id = f_get_tienda_id();
+
+-- CATEGORIAS
+CREATE OR REPLACE VIEW v_categorias AS
+SELECT *
+FROM categorias
+WHERE tienda_id = f_get_tienda_id();
+
+-- PEDIDOS (solo los pedidos de usuarios de su tienda)
+CREATE OR REPLACE VIEW v_pedidos AS
+SELECT p.*
+FROM pedidos p
+JOIN usuarios u ON p.usuario_id = u.usuario_id
+WHERE u.tienda_id = f_get_tienda_id();
+
+-- DETALLES PEDIDO (a través del pedido → usuario → tienda)
+CREATE OR REPLACE VIEW v_detalles_pedido AS
+SELECT dp.*
+FROM detalles_pedido dp
+JOIN pedidos p ON dp.pedido_id = p.pedido_id AND dp.fecha_pedido_fk = p.fecha_pedido
+JOIN usuarios u ON p.usuario_id = u.usuario_id
+WHERE u.tienda_id = f_get_tienda_id();
+
+-- PAGOS
+CREATE OR REPLACE VIEW v_pagos AS
+SELECT pg.*
+FROM pagos pg
+JOIN pedidos p ON pg.pedido_id = p.pedido_id AND pg.fecha_pedido_fk = p.fecha_pedido
+JOIN usuarios u ON p.usuario_id = u.usuario_id
+WHERE u.tienda_id = f_get_tienda_id();
+
+-- USUARIOS
+CREATE OR REPLACE VIEW v_usuarios AS
+SELECT *
+FROM usuarios
+WHERE tienda_id = f_get_tienda_id();
+
+-- DIRECCIONES
+CREATE OR REPLACE VIEW v_direcciones AS
+SELECT d.*
+FROM direcciones d
+JOIN usuarios u ON d.usuario_id = u.usuario_id
+WHERE u.tienda_id = f_get_tienda_id();
+
+-- PRODUCTO_CATEGORIAS
+CREATE OR REPLACE VIEW v_producto_categorias AS
+SELECT pc.*
+FROM producto_categorias pc
+JOIN productos p ON pc.producto_id = p.producto_id
+WHERE p.tienda_id = f_get_tienda_id();
+
+-- USUARIO_ROLES
+CREATE OR REPLACE VIEW v_usuario_roles AS
+SELECT ur.*
+FROM usuario_roles ur
+JOIN usuarios u ON ur.usuario_id = u.usuario_id
+WHERE u.tienda_id = f_get_tienda_id();
+
+--TIENDAS
+CREATE OR REPLACE VIEW v_tiendas AS
+SELECT *
+FROM tiendas
+WHERE tienda_id = f_get_tienda_id();
+
+
+-- Hecho_Ventas
+CREATE OR REPLACE VIEW v_hecho_ventas AS
+SELECT *
+FROM Hecho_Ventas
+WHERE tienda_id = f_get_tienda_id();
+
+-- Solo los productos de mi tienda
+CREATE OR REPLACE VIEW v_dim_producto AS
+SELECT dp.*
+FROM Dim_Producto dp
+JOIN productos p ON dp.producto_id = p.producto_id
+WHERE p.tienda_id = f_get_tienda_id();
+
+-- Solo los usuarios de mi tienda
+CREATE OR REPLACE VIEW v_dim_usuario AS
+SELECT *
+FROM Dim_Usuario
+WHERE tienda_id = f_get_tienda_id();
+
+-- Dim_Tienda con solo mi tienda
+CREATE OR REPLACE VIEW v_dim_tienda AS
+SELECT *
+FROM Dim_Tienda
+WHERE tienda_id = f_get_tienda_id();
+
+-- Dim_Tiempo no necesita filtro
+CREATE OR REPLACE VIEW v_dim_tiempo AS
+SELECT * FROM Dim_Tiempo;
+
+--Tabla de auditoría
+CREATE OR REPLACE VIEW v_tabla_auditoria AS
+SELECT a.*
+FROM tabla_auditoria a
+JOIN usuarios u ON u.email = a.usuario_accion
+WHERE u.tienda_id = f_get_tienda_id();
+
+
 CREATE ROLE rol_administrador;
+CREATE ROLE rol_administrador_tienda;
 CREATE ROLE rol_vendedor;
 CREATE ROLE rol_bodeguero;
 CREATE ROLE rol_analista;
@@ -607,31 +737,51 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON Dim_Usuario TO rol_administrador;
 GRANT SELECT, INSERT, UPDATE, DELETE ON Dim_Tienda TO rol_administrador;
 GRANT SELECT, INSERT, UPDATE, DELETE ON Hecho_Ventas TO rol_administrador;
 
+-- ADMINISTRADOR TIENDA
+GRANT SELECT, INSERT, UPDATE, DELETE ON v_tiendas TO rol_administrador_tienda;
+GRANT SELECT, INSERT, UPDATE, DELETE ON v_usuarios TO rol_administrador_tienda;
+GRANT SELECT, INSERT, UPDATE, DELETE ON v_productos TO rol_administrador_tienda;
+GRANT SELECT, INSERT, UPDATE, DELETE ON v_pedidos TO rol_administrador_tienda;
+GRANT SELECT, INSERT, UPDATE, DELETE ON v_detalles_pedido TO rol_administrador_tienda;
+GRANT SELECT, INSERT, UPDATE, DELETE ON v_pagos TO rol_administrador_tienda;
+GRANT SELECT, INSERT, UPDATE, DELETE ON v_categorias TO rol_administrador_tienda;
+GRANT SELECT, INSERT, UPDATE, DELETE ON v_producto_categorias TO rol_administrador_tienda;
+GRANT SELECT, INSERT, UPDATE, DELETE ON v_direcciones TO rol_administrador_tienda;
+GRANT SELECT, INSERT, UPDATE, DELETE ON v_usuario_roles TO rol_administrador_tienda;
+GRANT SELECT ON roles TO rol_administrador_tienda;
+
+GRANT SELECT ON v_tabla_auditoria TO rol_administrador_tienda;
+GRANT SELECT, INSERT, UPDATE, DELETE ON v_dim_tiempo TO rol_administrador_tienda;
+GRANT SELECT, INSERT, UPDATE, DELETE ON v_dim_producto TO rol_administrador_tienda;
+GRANT SELECT, INSERT, UPDATE, DELETE ON v_dim_usuario TO rol_administrador_tienda;
+GRANT SELECT, INSERT, UPDATE, DELETE ON v_dim_tienda TO rol_administrador_tienda;
+GRANT SELECT, INSERT, UPDATE, DELETE ON v_hecho_ventas TO rol_administrador_tienda;
+
 -- VENDEDOR
-GRANT SELECT, INSERT, UPDATE ON pedidos TO rol_vendedor;
-GRANT SELECT, INSERT ON detalles_pedido TO rol_vendedor;
-GRANT SELECT, INSERT ON productos TO rol_vendedor;
-GRANT SELECT ON usuarios TO rol_vendedor;
+GRANT SELECT, INSERT, UPDATE ON v_pedidos TO rol_vendedor;
+GRANT SELECT, INSERT ON v_detalles_pedido TO rol_vendedor;
+GRANT SELECT, INSERT ON v_productos TO rol_vendedor;
+GRANT SELECT ON v_usuarios TO rol_vendedor;
 
 -- BODEGUERO
-GRANT SELECT ON pedidos TO rol_bodeguero;
--- Acceso a lectura de productos y solo modificar el stock
-GRANT SELECT ON productos TO rol_bodeguero;
-GRANT UPDATE (stock, sku) ON productos TO rol_bodeguero;
+GRANT SELECT ON v_pedidos TO rol_bodeguero;
+GRANT SELECT ON v_productos TO rol_bodeguero;
+GRANT UPDATE (stock, sku) ON v_productos TO rol_bodeguero;
 
 -- ANALISTA
-GRANT SELECT ON Dim_Tiempo TO rol_analista;
-GRANT SELECT ON Dim_Producto TO rol_analista;
-GRANT SELECT ON Dim_Usuario TO rol_analista;
-GRANT SELECT ON Dim_Tienda TO rol_analista;
-GRANT SELECT ON Hecho_Ventas TO rol_analista;
-GRANT SELECT ON tabla_auditoria TO rol_analista;
+GRANT SELECT ON v_dim_tiempo TO rol_analista;
+GRANT SELECT ON v_dim_producto TO rol_analista;
+GRANT SELECT ON v_dim_usuario TO rol_analista;
+GRANT SELECT ON v_dim_tienda TO rol_analista;
+GRANT SELECT ON v_hecho_ventas TO rol_analista;
+GRANT SELECT ON v_tabla_auditoria TO rol_analista;
 
 -- SOPORTE
-GRANT SELECT ON usuarios TO rol_soporte;
-GRANT SELECT ON pedidos TO rol_soporte;
-GRANT SELECT ON pagos TO rol_soporte;
-GRANT SELECT ON direcciones TO rol_soporte;
+GRANT SELECT ON v_usuarios TO rol_soporte;
+GRANT SELECT ON v_pedidos TO rol_soporte;
+GRANT SELECT ON v_pagos TO rol_soporte;
+GRANT SELECT ON v_direcciones TO rol_soporte;
+GRANT SELECT ON v_usuario_roles TO rol_soporte;
 
 -- USUARIO ADMINISTRADOR
 CREATE USER admin_user IDENTIFIED BY admin_pass;
@@ -639,6 +789,14 @@ GRANT CONNECT TO admin_user;
 ALTER USER admin_user DEFAULT TABLESPACE users;
 ALTER USER admin_user QUOTA UNLIMITED ON users;
 GRANT rol_administrador TO admin_user;
+
+-- USUARIO ADMINISTRADOR TIENDA
+CREATE USER admin_tienda_user IDENTIFIED BY tienda_pass;
+GRANT CONNECT TO admin_tienda_user;
+ALTER USER admin_tienda_user DEFAULT TABLESPACE users;
+ALTER USER admin_tienda_user QUOTA UNLIMITED ON users;
+GRANT rol_administrador_tienda TO admin_tienda_user;
+
 
 -- USUARIO VENDEDOR
 CREATE USER vendedor_user IDENTIFIED BY vendedor_pass;
@@ -667,6 +825,11 @@ GRANT CONNECT TO soporte_user;
 ALTER USER soporte_user DEFAULT TABLESPACE users;
 ALTER USER soporte_user QUOTA UNLIMITED ON users;
 GRANT rol_soporte TO soporte_user;
+
+--TRAS CADA INICIO DE SESION SE DEBE EJECUTAR EL SIGUIENTE COMANDO PARA ASIGNAR LA TIENDA ACTUAL
+--BEGIN
+--  DBMS_SESSION.SET_IDENTIFIER('correo@ejemplo.com');
+--END;
 
 PROMPT --- 🤑 ROLES Y USUARIOS CREADOS 🤑 ---
 
