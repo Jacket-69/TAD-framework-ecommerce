@@ -52,3 +52,11 @@ else
   echo "Puedes conectarte con el usuario: ECOMMERCE_FRAMEWORK"
   echo "Pero la contraseña no te la puedo decir. 😭"
 fi
+
+  # --- PASO 3: Crear índices y vistas de auditoría ---
+  echo "--> Ejecutando 04_optimizacion_vistas.sql como ECOMMERCE_FRAMEWORK..."
+  sqlplus -s ECOMMERCE_FRAMEWORK/framework123@//localhost:1521/XEPDB1 @/app/sql/04_optimizacion_vistas.sql
+  if [ $? -ne 0 ]; then
+    echo "❌ ERROR: Falló la creación de vistas o índices 😡. Revisa 04_optimizacion_vistas.sql."
+    exit 1
+  fi
