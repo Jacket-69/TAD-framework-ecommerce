@@ -59,6 +59,37 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('✔️  Pedido de prueba insertado con éxito.');
 END;
 /
+INSERT INTO usuarios (
+    usuario_id, tienda_id, email, password_hash, nombre, apellido
+) VALUES (
+    1006, 999, 'analista2@tienda.com', 'hash123', 'Ana', 'Lista'
+);
+INSERT INTO usuario_roles (usuario_id, rol_id)
+SELECT 1006, rol_id
+FROM roles
+WHERE nombre_rol = 'Analista';
+
+INSERT INTO usuarios (usuario_id, tienda_id, email, password_hash, nombre, apellido)
+VALUES (9002, 999, 'cliente@tienda.com', 'hash456', 'Carlos', 'Cliente');
+-- Dirección
+INSERT INTO direcciones (direccion_id, usuario_id, calle, ciudad, region, codigo_postal, pais)
+VALUES (9001, 9002, 'Calle Falsa 123', 'Santiago', 'RM', '1230000', 'Chile');
+-- Producto y categoría
+INSERT INTO categorias (categoria_id, tienda_id, nombre)
+VALUES (999, 999, 'Test Categoria');
+INSERT INTO productos (producto_id, tienda_id, nombre, precio, stock, sku)
+VALUES (999, 999, 'Test Producto', 10000, 10, 'SKU-TEST');
+INSERT INTO producto_categorias (producto_id, categoria_id)
+VALUES (999, 999);
+-- Pedido
+INSERT INTO pedidos (pedido_id, usuario_id, direccion_envio_id, fecha_pedido, estado, total)
+VALUES (999, 9002, 9001, SYSDATE, 'PAGADO', 20000);
+INSERT INTO detalles_pedido (pedido_id, fecha_pedido_fk, producto_id, cantidad, precio_unitario)
+VALUES (999, SYSDATE, 999, 2, 10000);
+INSERT INTO tiendas (tienda_id, nombre, url_dominio)
+VALUES (999, 'Test Store', 'teststore.com');
+
+    
 
 COMMIT;
 PROMPT --- ¡Listo Calisto! ---
