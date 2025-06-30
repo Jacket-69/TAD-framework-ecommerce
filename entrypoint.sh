@@ -42,6 +42,14 @@ if [[ -z "$USER_EXISTS" ]]; then
     exit 1
   fi
 
+    # PASO 4: Ejecutar Backup RMAN
+  echo "--> Ejecutando 09_backuo_rman como ECOMMERCE_FRAMEWORK..."
+  sqlplus -s ECOMMERCE_FRAMEWORK/framework123@//localhost:1521/XEPDB1 @/app/sql/09_backup_rman.sh
+  if [ $? -ne 0 ]; then
+    echo "❌ ERROR: Falló del script 😡. Revisa 09_backup_rman.sh"
+    exit 1
+  fi
+
   echo ""
   echo "✅ ¡Listaylor! ✅"
   echo "La base de datos ha sido creada y estructurada exitosamente. 😈"
