@@ -104,6 +104,43 @@ Procedimientos Clave: P_CARGAR_VENTAS_AL_DW (carga las ventas desde el sistema t
 Transacciones: Estos procedimientos son transaccionales y usan COMMIT y ROLLBACK para garantizar la integridad de los datos durante la carga.
 Manejo de Excepciones: El paquete implementa excepciones personalizadas como e_datos_insuficientes para gestionar errores de negocio de forma controlada y entregar mensajes claros, aumentando la robustez de la aplicación.
 
+## Parte 6: Funciones auxiliares y validaciones
+
+Para cargar y probar las funciones auxiliares desarrolladas, ejecutar el script:
+
+```sql
+@funciones_auxiliares.sql
+```
+
+Luego, puedes probar las funciones utilizando `SELECT` desde `DUAL`, por ejemplo:
+
+```sql
+SELECT resumen_ventas_usuario(1) FROM dual;
+SELECT verificar_usuario_activo_en_compras(1) FROM dual;
+SELECT productos_bajo_stock(1, 10) FROM dual;
+SELECT ventas_por_region('Metropolitana') FROM dual;
+```
+
+Estas funciones permiten obtener información relevante como el total de ventas de un usuario, actividad reciente en compras, productos con stock bajo o el total vendido en una región específica.
+
+---
+
+## Parte 7: Triggers y pruebas funcionales
+
+Primero, cargar todos los triggers ejecutando:
+
+```sql
+@triggers.sql
+```
+
+Luego, ejecutar el script de pruebas funcionales con:
+
+```sql
+@pruebas_funcionales.sql
+```
+
+Este script realiza inserciones y actualizaciones sobre datos de prueba para verificar que los triggers funcionen correctamente, incluyendo validaciones de stock, fechas de pedidos, pagos correctos y automatización de inserciones en un entorno de Data Warehouse. También se prueban vistas con permisos restringidos.
+
 
 
 
