@@ -1,12 +1,13 @@
 -- --------------------------------------------------------------------------
-    /*
-    Este script inserta un par de cositas en cada tabla
-    para que no te sientas tan solo al hacer tus primeras consultas.
-    Ejecútalo como el usuario ECOMMERCE_FRAMEWORK.
-    */
+/*
+Este script inserta un par de cositas en cada tabla
+para que no te sientas tan solo al hacer tus primeras consultas.
+Ejecútalo como el usuario ECOMMERCE_FRAMEWORK.
+*/
 -- --------------------------------------------------------------------------
 
 SET SERVEROUTPUT ON;
+
 -- Limpiamos por si ejecutas esto más de una vez.
 BEGIN
     DELETE FROM pagos;
@@ -28,68 +29,116 @@ END;
 /
 
 -- Insertar datos
-INSERT INTO tiendas (tienda_id, nombre, url_dominio) VALUES (1, 'La Zapatillería Feroz', 'zapatillasferoces.com');
-INSERT INTO roles (rol_id, nombre_rol) VALUES (1, 'Jefe de Jefes');
-INSERT INTO roles (rol_id, nombre_rol) VALUES (2, 'Cliente Fiel');
-INSERT INTO usuarios (usuario_id, tienda_id, email, password_hash, nombre, apellido) VALUES (101, 1, 'admin@tienda.com', 'hash_del_jefe', 'El', 'Admin');
-INSERT INTO usuarios (usuario_id, tienda_id, email, password_hash, nombre, apellido) VALUES (102, 1, 'benja.lopez@cliente.com', 'hash_del_cliente', 'Benja', 'López');
-INSERT INTO usuario_roles (usuario_id, rol_id) VALUES (101, 1);
-INSERT INTO usuario_roles (usuario_id, rol_id) VALUES (102, 2);
-INSERT INTO categorias (categoria_id, tienda_id, nombre) VALUES (1, 1, 'Para Correr con Estilo');
-INSERT INTO categorias (categoria_id, tienda_id, nombre) VALUES (2, 1, 'Para Pisar Hormigas');
-
-INSERT INTO productos (producto_id, tienda_id, nombre, precio, stock, sku) VALUES (1, 1, 'Zapatillas "El Rayo"', 69990, 20, 'ZAP-RAYO-2025');
-INSERT INTO productos (producto_id, tienda_id, nombre, precio, stock, sku) VALUES (2, 1, 'Zapatos "El Gerente"', 42000, 50, 'ZAP-GERENTE-2025');
-
-INSERT INTO producto_categorias (producto_id, categoria_id) VALUES (1, 1);
-INSERT INTO producto_categorias (producto_id, categoria_id) VALUES (2, 2);
-
--- Un pedido de prueba
 DECLARE
+    -- Tiendas
+    v_tienda1_id NUMBER;
+    v_tienda2_id NUMBER;
+
+    -- Roles
+    v_rol_admin_id NUMBER;
+    v_rol_cliente_id NUMBER;
+    v_rol_analista_id NUMBER;
+
+    -- Usuarios
+    v_usuario_admin_id NUMBER;
+    v_usuario_cliente_id NUMBER;
+    v_usuario_analista1_id NUMBER;
+    v_usuario_analista2_id NUMBER;
+
+    -- Categorías y Productos
+    v_categoria1_id NUMBER;
+    v_categoria2_id NUMBER;
+    v_producto1_id NUMBER;
+    v_producto2_id NUMBER;
+
+    -- Fecha de pedido
     v_fecha_pedido DATE := TO_DATE('24-06-2025', 'DD-MM-YYYY');
 BEGIN
-    INSERT INTO pedidos (pedido_id, usuario_id, fecha_pedido, estado, total)
-    VALUES (1, 102, v_fecha_pedido, 'PAGADO', 69990);
+    -- Tienda 1
+    INSERT INTO tiendas (nombre, url_dominio)
+    VALUES ('La Zapatillería Feroz', 'zapatillasferoces.com')
+    RETURNING tienda_id INTO v_tienda1_id;
+
+    -- Tienda 2
+    INSERT INTO tiendas (nombre, url_dominio)
+    VALUES ('Botines Eternos', 'botineseternos.com')
+    RETURNING tienda_id INTO v_tienda2_id;
+
+    -- Roles
+    INSERT INTO roles (nombre_rol)
+    VALUES ('Jefe de Jefes')
+    RETURNING rol_id INTO v_rol_admin_id;
+
+    INSERT INTO roles (nombre_rol)
+    VALUES ('Cliente Fiel')
+    RETURNING rol_id INTO v_rol_cliente_id;
+
+    INSERT INTO roles (nombre_rol)
+    VALUES ('Analista')
+    RETURNING rol_id INTO v_rol_analista_id;
+
+    -- Usuarios para Tienda 1
+    INSERT INTO usuarios (tienda_id, email, password_hash, nombre, apellido)
+    VALUES (v_tienda1_id, 'admin@tienda1.com', 'hash_del_jefe', 'El', 'Admin')
+    RETURNING usuario_id INTO v_usuario_admin_id;
+
+    INSERT INTO usuarios (tienda_id, email, password_hash, nombre, apellido)
+    VALUES (v_tienda1_id, 'benja.lopez@cliente.com', 'hash_del_cliente', 'Benja', 'López')
+    RETURNING usuario_id INTO v_usuario_cliente_id;
+
+    INSERT INTO usuarios (tienda_id, email, password_hash, nombre, apellido)
+    VALUES (v_tienda1_id, 'ana@zapatillas.com', 'hash_analista1', 'Ana', 'Lista')
+    RETURNING usuario_id INTO v_usuario_analista1_id;
+
+    -- Usuario analista para Tienda 2
+    INSERT INTO usuarios (tienda_id, email, password_hash, nombre, apellido)
+    VALUES (v_tienda2_id, 'luis@botines.com', 'hash_analista2', 'Luis', 'Datos')
+    RETURNING usuario_id INTO v_usuario_analista2_id;
+
+    -- Roles asignados
+    INSERT INTO usuario_roles (usuario_id, rol_id) VALUES (v_usuario_admin_id, v_rol_admin_id);
+    INSERT INTO usuario_roles (usuario_id, rol_id) VALUES (v_usuario_cliente_id, v_rol_cliente_id);
+    INSERT INTO usuario_roles (usuario_id, rol_id) VALUES (v_usuario_analista1_id, v_rol_analista_id);
+    INSERT INTO usuario_roles (usuario_id, rol_id) VALUES (v_usuario_analista2_id, v_rol_analista_id);
+
+    -- Categorías (solo para tienda 1)
+    INSERT INTO categorias (tienda_id, nombre)
+    VALUES (v_tienda1_id, 'Para Correr con Estilo')
+    RETURNING categoria_id INTO v_categoria1_id;
+
+    INSERT INTO categorias (tienda_id, nombre)
+    VALUES (v_tienda1_id, 'Para Pisar Hormigas')
+    RETURNING categoria_id INTO v_categoria2_id;
+
+    -- Productos (solo para tienda 1)
+    INSERT INTO productos (tienda_id, nombre, precio, stock, sku)
+    VALUES (v_tienda1_id, 'Zapatillas "El Rayo"', 69990, 20, 'ZAP-RAYO-2025')
+    RETURNING producto_id INTO v_producto1_id;
+
+    INSERT INTO productos (tienda_id, nombre, precio, stock, sku)
+    VALUES (v_tienda1_id, 'Zapatos "El Gerente"', 42000, 50, 'ZAP-GERENTE-2025')
+    RETURNING producto_id INTO v_producto2_id;
+
+    -- Producto Categorías
+    INSERT INTO producto_categorias (producto_id, categoria_id)
+    VALUES (v_producto1_id, v_categoria1_id);
+
+    INSERT INTO producto_categorias (producto_id, categoria_id)
+    VALUES (v_producto2_id, v_categoria2_id);
+
+    -- Pedido de prueba (cliente de tienda 1)
+    INSERT INTO pedidos (usuario_id, fecha_pedido, estado, total)
+    VALUES (v_usuario_cliente_id, v_fecha_pedido, 'PAGADO', 69990);
 
     INSERT INTO detalles_pedido (pedido_id, fecha_pedido_fk, producto_id, cantidad, precio_unitario)
-    VALUES (1, v_fecha_pedido, 1, 1, 69990);
+    VALUES (1, v_fecha_pedido, v_producto1_id, 1, 69990);
 
     INSERT INTO pagos (pedido_id, fecha_pedido_fk, monto, fecha_pago, metodo_pago, estado_pago)
     VALUES (1, v_fecha_pedido, 69990, v_fecha_pedido, 'TARJETA_DE_CRÉDITO_DE_JUGUETE', 'COMPLETADO');
-    DBMS_OUTPUT.PUT_LINE('✔️  Pedido de prueba insertado con éxito.');
+
+    DBMS_OUTPUT.PUT_LINE('✔️  Datos insertados con éxito.');
 END;
 /
-INSERT INTO usuarios (
-    usuario_id, tienda_id, email, password_hash, nombre, apellido
-) VALUES (
-    1006, 999, 'analista2@tienda.com', 'hash123', 'Ana', 'Lista'
-);
-INSERT INTO usuario_roles (usuario_id, rol_id)
-SELECT 1006, rol_id
-FROM roles
-WHERE nombre_rol = 'Analista';
-
-INSERT INTO usuarios (usuario_id, tienda_id, email, password_hash, nombre, apellido)
-VALUES (9002, 999, 'cliente@tienda.com', 'hash456', 'Carlos', 'Cliente');
--- Dirección
-INSERT INTO direcciones (direccion_id, usuario_id, calle, ciudad, region, codigo_postal, pais)
-VALUES (9001, 9002, 'Calle Falsa 123', 'Santiago', 'RM', '1230000', 'Chile');
--- Producto y categoría
-INSERT INTO categorias (categoria_id, tienda_id, nombre)
-VALUES (999, 999, 'Test Categoria');
-INSERT INTO productos (producto_id, tienda_id, nombre, precio, stock, sku)
-VALUES (999, 999, 'Test Producto', 10000, 10, 'SKU-TEST');
-INSERT INTO producto_categorias (producto_id, categoria_id)
-VALUES (999, 999);
--- Pedido
-INSERT INTO pedidos (pedido_id, usuario_id, direccion_envio_id, fecha_pedido, estado, total)
-VALUES (999, 9002, 9001, SYSDATE, 'PAGADO', 20000);
-INSERT INTO detalles_pedido (pedido_id, fecha_pedido_fk, producto_id, cantidad, precio_unitario)
-VALUES (999, SYSDATE, 999, 2, 10000);
-INSERT INTO tiendas (tienda_id, nombre, url_dominio)
-VALUES (999, 'Test Store', 'teststore.com');
-
-    
 
 COMMIT;
 PROMPT --- ¡Listo Calisto! ---
