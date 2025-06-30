@@ -1,6 +1,6 @@
 
 # ===================================================================
-# SCRIPT DE RECUPERACIÓN FÍSICA (RMAN)
+# SCRIPT DE RECUPERACIÓN FÍSICA (RMAN),
 # ¡ADVERTENCIA! Este script es para recuperación ante desastres y
 # debe ser ejecutado por un DBA con extrema precaución.
 # ===================================================================
