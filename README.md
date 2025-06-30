@@ -93,6 +93,17 @@ Este archivo sirve para optimizar de manera adecuada nuestra base de datos, redu
 Creacion de consulta compleja con respecto a toma de decisiones para el analista y su tienda.
 Este script esta creado para el analista que muestra los 10 clientes con fecha de ultimo mes que tienen mas pedidos completados, mientras que el segundo script muestra los productos mas vendidos por region.
 
+### Paso 5:PKG INTELIGENCIA DE NEGOCIO.
+Se desarrolló un paquete PL/SQL que actúa como el cerebro analítico del sistema, operando exclusivamente sobre el Data Warehouse para no afectar el rendimiento de la tienda en vivo. Sus responsabilidades se dividen en dos áreas:
+Funciones para el Analista: Ofrece una suite de herramientas de alto valor para responder preguntas de negocio complejas.
+Funciones Clave: F_OBTENER_CLIENTES_VALIOSOS (devuelve un ranking de los mejores clientes) y F_CALCULAR_AOV_PERIODO (calcula el valor promedio de las órdenes).
+
+Seguridad: Todas las funciones consultan las vistas seguras (v_*), garantizando que un analista solo pueda acceder a la información de su propia tienda.
+Procedimientos de Soporte (ETL): Incluye la lógica administrativa para mantener el Data Warehouse actualizado.
+Procedimientos Clave: P_CARGAR_VENTAS_AL_DW (carga las ventas desde el sistema transaccional al DWH) y P_SINCRONIZAR_DIMENSIONES (actualiza los catálogos de productos y usuarios).
+Transacciones: Estos procedimientos son transaccionales y usan COMMIT y ROLLBACK para garantizar la integridad de los datos durante la carga.
+Manejo de Excepciones: El paquete implementa excepciones personalizadas como e_datos_insuficientes para gestionar errores de negocio de forma controlada y entregar mensajes claros, aumentando la robustez de la aplicación.
+
 
 
 
