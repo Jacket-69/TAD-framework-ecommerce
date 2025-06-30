@@ -86,30 +86,12 @@ Si quieres tener algunos datos de ejemplo para probar tus propias consultas o fu
 
 ### Paso 3: Optimizacion de la base de datos
 Creacion de indices Estrategicos.
-Ejecutar el Script index_explain_plan.sql para poder ejecutar la optimizacion de la base de datos
-```bash
-En cmd ejecutar docker docker cp "C:\Users\"Tu usuario"\TAD-framework-ecommerce\sql\index_explain_plan.sql" tad_oracle_db:/opt/index_explain_plan.sql "
-```
-```bash
-Dentro de la base de datos Sql ejectuar @/app/sql/index_explain_plan.sql
-```
-Contiene los indices para lograr la optimizacion correspondiente, tambien el uso de EXPLAIN PLAN para evaluacion de rendimiento.
+En el apartado de script se ejecuta automaticamente el archivo 04_optimizacion_vistas.sql.
+Este archivo sirve para optimizar de manera adecuada nuestra base de datos, reduciendo considerablemente el tiempo de busqueda.
 
-### Paso 4 : Creacion de Vistas Materalizadas.
-Ideal para acelerar reportes con muchos calculos.
-Al igual que el paso 4 se tiene que ejecutar en el cmd
-```bash
-En cmd ejecutar docker docker cp "C:\Users\"Tu usuario"\TAD-framework-ecommerce\sql\.sql" tad_oracle_db:/opt/creacion_vistas.sql "
-```
-```bash
-Dentro de la base de datos Sql ejectuar @/app/sql/creacion_vistas.sql
-```
-Esto es para la validacion de rendimiento, tomando una mejora considerable por consulta.
-
-### Adicional: Ejecutar scripts de complejidad
-(Opcional) Puedes ejecutar el script de operaciones_complejas.sql , de la misma manera que los pasos anteriores, sirve 
-para tener una vista para toma de decisiones(Consulta sobre cambios de auditoria(Update,Delete,Insert) y sobre Resumen mensual de operacion por tipo y tabla).
-
+### Paso 4: Generar Consulta de toma de decisiones.
+Creacion de consulta compleja con respecto a toma de decisiones para el analista y su tienda.
+Este script esta creado para el analista que muestra los 10 clientes con fecha de ultimo mes que tienen mas pedidos completados, mientras que el segundo script muestra los productos mas vendidos por region.
 
 
 
